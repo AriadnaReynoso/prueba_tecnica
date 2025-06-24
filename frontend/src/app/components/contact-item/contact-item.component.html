@@ -1,0 +1,14 @@
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">{{ contact().name }}</h5>
+    <p class="card-text">Email: {{ contact().email }}</p>
+    <p class="card-text">
+      Teléfonos:
+      @for (phone of contact().phones; track phone; let i = $index) {
+        <span>{{ phone }}{{ i < contact().phones.length - 1 ? ', ' : '' }}</span>
+      }
+    </p>
+    <button class="btn btn-primary me-2" (click)="editContact.emit(contact().id)">Editar</button>
+    <button class="btn btn-danger" (click)="deleteContact.emit(contact().id)">Eliminar</button>
+  </div>
+</div>

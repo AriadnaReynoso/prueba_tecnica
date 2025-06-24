@@ -1,0 +1,32 @@
+<div class="container mt-4">
+  <h2 class="mb-3">Lista de Contactos</h2>
+  <button class="btn btn-success mb-3" (click)="addContact()">Agregar Contacto</button>
+  @if (contacts().length === 0) {
+    <div class="alert alert-info">No hay contactos disponibles.</div>
+  } @else {
+    <ul class="list-group">
+      @for (contact of contacts(); track contact.id; let idx = $index) {
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            <span>{{ idx + 1 }} - {{ contact.name }}</span>
+            <small class="d-block text-muted">Email: {{ contact.email }}</small>
+            <small class="d-block text-muted">
+              Teléfonos:
+              @for (phone of contact.phones; track phone; let i = $index) {
+                {{ phone }}{{ i < contact.phones.length - 1 ? ', ' : '' }}
+              }
+            </small>
+          </div>
+          <div>
+            <button
+              class="btn btn-primary me-1"
+              (click)="onEditContact(contact.id)">Editar</button>
+            <button
+              class="btn btn-secondary"
+              (click)="onDeleteContact(contact.id)">Eliminar</button>
+          </div>
+        </li>
+      }
+    </ul>
+  }
+</div>

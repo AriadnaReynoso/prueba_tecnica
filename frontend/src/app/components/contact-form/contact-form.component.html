@@ -1,0 +1,78 @@
+<div class="container mt-4">
+  <h2 class="mb-3">{{ isEditMode ? 'Editar Contacto' : 'Agregar Contacto' }}</h2>
+  <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
+    <div class="mb-3">
+      <label for="name" class="form-label">Nombre (requerido):</label>
+      <input id="name" formControlName="name" class="form-control" type="text" placeholder="Nombre">
+      @if (contactForm.get('name')?.invalid && contactForm.get('name')?.touched) {
+        <div class="text-danger">
+          @switch (true) {
+            @case (contactForm.get('name')?.errors?.['required']) {
+              <span>El nombre es requerido.</span>
+            }
+            @case (contactForm.get('name')?.errors?.['minlength']) {
+              <span>El nombre debe tener al menos 3 caracteres.</span>
+            }
+          }
+        </div>
+      }
+    </div>
+
+    <div class="mb-3">
+      <label for="email" class="form-label">Email (requerido):</label>
+      <input id="email" formControlName="email" class="form-control" type="email" placeholder="correo@ejemplo.com">
+      @if (contactForm.get('email')?.invalid && contactForm.get('email')?.touched) {
+        <div class="text-danger">
+          @switch (true) {
+            @case (contactForm.get('email')?.errors?.['required']) {
+              <span>El email es requerido.</span>
+            }
+            @case (contactForm.get('email')?.errors?.['email']) {
+              <span>Debe ser un email válido (ejemplo: user&#64;ejemplo.com).</span>
+            }
+          }
+        </div>
+      }
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Teléfonos (al menos uno requerido, formato XXX-XXX-XXXX):</label>
+      <div formArrayName="phones">
+        @for (phone of phones.controls; track $index; let i = $index) {
+          <div [formGroupName]="i" class="input-group mb-2">
+            <input formControlName="phone" class="form-control" type="text" placeholder="123-456-7890">
+            @if (phones.length > 1) {
+              <button type="button" class="btn btn-danger" (click)="removePhone(i)">X</button>
+            }
+            @if (phone.get('phone')?.invalid && phone.get('phone')?.touched) {
+              <div class="text-danger">
+                @switch (true) {
+                  @case (phone.get('phone')?.errors?.['required']) {
+                    <span>El teléfono es requerido.</span>
+                  }
+                  @case (phone.get('phone')?.errors?.['pattern']) {
+                    <span>Formato inválido. Use XXX-XXX-XXXX (ejemplo: 123-456-7890).</span>
+                  }
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+      @if (phones.invalid && phones.touched) {
+        <div class="text-danger">
+          <span>Se requiere al menos un teléfono válido.</span>
+        </div>
+      }
+      <button type="button" class="btn btn-info" (click)="addPhone()">Agregar Teléfono</button>
+    </div>
+
+    <div class="mb-3">
+      <div class="alert alert-info">
+        Estado del formulario: {{ contactForm.valid ? 'Válido' : 'Inválido' }}
+      </div>
+      <button type="submit" class="btn btn-success me-2" [disabled]="contactForm.invalid">Guardar</button>
+      <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancelar</button>
+    </div>
+  </form>
+</div>
